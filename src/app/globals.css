@@ -1,0 +1,38 @@
+:root {
+  --primary: #4e56ff;
+  --secondary: #48d359;
+  --text-primary: #2c3a57;
+  --text-secondary: #4f5f82;
+  --shadow: rgba(0, 0, 0, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  padding: 16px 24px;
+  min-width: 120px;
+  font-size: 14px;
+  background-color: var(--secondary);
+  color: #fff;
+  border-radius: 3px;
+  border: none;
+}
+
+button:hover {
+  opacity: 0.8;
+}
