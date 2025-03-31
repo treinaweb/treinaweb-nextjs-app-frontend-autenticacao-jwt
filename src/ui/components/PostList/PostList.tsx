@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { Post } from '@/api/model/post';
 import styles from './PostList.module.css';
 import Link from "next/link";
