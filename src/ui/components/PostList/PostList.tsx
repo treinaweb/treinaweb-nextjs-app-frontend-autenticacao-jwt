@@ -12,6 +12,8 @@ export default async function PostList({ posts }: { posts: Post[] }) {
   const token  = (await cookies()).get('auth-token')?.value;
   const user = await getUserFromToken(token as string);
 
+  console.log('old token: -->: ', token);
+
   return (
     <>
       <ul className={styles.postList}>
@@ -33,7 +35,6 @@ export default async function PostList({ posts }: { posts: Post[] }) {
 export async function PostListItem({ post }: { post: Post }) {
   const token  = (await cookies()).get('auth-token')?.value;
   const user = await getUserFromToken(token as string);
-
 
   return (
     <li className={styles.postListItem}>

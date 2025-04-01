@@ -23,7 +23,6 @@ export async function login(email: string, password: string) {
       value: token,
       httpOnly: true,
       path: '/',
-      maxAge: 60 * 10
     });
 
     cookieStore.set({
@@ -31,7 +30,6 @@ export async function login(email: string, password: string) {
       value: refreshToken,
       httpOnly: true,
       path: '/',
-      maxAge: 60 * 20
     });
 
     return {success: true};
@@ -57,7 +55,6 @@ export async function logout() {
 
 export async function refreshTokens() {
   try {
-    console.log('ta aqui??')
     const cookieStore = await cookies();
     const refreshToken = cookieStore.get('refresh-token');
 
@@ -81,7 +78,6 @@ export async function refreshTokens() {
       value: newToken,
       httpOnly: true,
       path: '/',
-      maxAge: 10
     });
 
     cookieStore.set({
@@ -89,9 +85,9 @@ export async function refreshTokens() {
       value: newRefreshToken,
       httpOnly: true,
       path: '/',
-      maxAge: 60
     });
 
+    console.log(newToken);
     return true;
 
   } catch (error) {

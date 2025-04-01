@@ -1,15 +1,29 @@
 "use server"
 
+import { refreshTokens } from "@/app/auth/login/actions";
 import { getAuthToken } from "../auth/utils";
 import { Post } from "../model/post";
 import axios from 'axios';
+import { redirect } from "next/navigation";
 
 const BASE_API = "http://localhost:3001/api/posts";
 
 export async function salvar(post: Post) {
-   const headers = await getAuthToken();
-   const { data } = await axios.post(`${BASE_API}`, post, { headers });
-   return data;
+    try {
+        const headers = await getAuthToken();
+        const { data } = await axios.post(`${BASE_API}`, post, { headers });
+        return data;
+    } catch (error) {
+        try {
+            await refreshTokens();
+            const headers = await getAuthToken();
+            const { data } = await axios.post(`${BASE_API}`, post, { headers });
+            return data;
+        } catch (error) {
+            console.error(error);
+            redirect('/auth/login');
+        }
+    }
 }
 
 export async function obterTodos(): Promise<Post[]> {
@@ -31,49 +45,33 @@ export async function obterPorSlug(slug: string): Promise<Post | null> {
 }
 
 export async function excluir(slug: string): Promise<void> {
+ try {
     const headers = await getAuthToken();
     await axios.delete(`${BASE_API}/${slug}`, { headers });
+ } catch (error) {
+    try {
+        await refreshTokens();
+        const headers = await getAuthToken();
+        await axios.delete(`${BASE_API}/${slug}`, { headers });
+    } catch (error) {
+        console.error(error);
+        redirect('/auth/login');
+    }
+ }
 }
 
 export async function update(post: Post, slug: string): Promise<void> {
-    const headers = await getAuthToken();
-    await axios.patch(`${BASE_API}/${slug}`, post, { headers});
+    try {
+        const headers = await getAuthToken();
+        await axios.patch(`${BASE_API}/${slug}`, post, { headers});
+    } catch (error) {
+        try {
+            await refreshTokens();
+            const headers = await getAuthToken();
+            await axios.patch(`${BASE_API}/${slug}`, post, { headers});
+        } catch (error) {
+            console.error(error);
+            redirect('/auth/login');
+        }
+    }
 }
-
-/* export async function salvar(post: Post) {
-    const response = await fetch(`${BASE_API}`, {
-        method: 'Post',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(post),
-    });
-
-    return await response.json();
-}
-
-export async function obterTodos(): Promise<Post[]> {
-    const response = await fetch(`${BASE_API}`);
-    return await response.json();
-}
-
-export async function obterPorSlug(slug: string): Promise<Post> {
-    const response = await fetch(`${BASE_API}/${slug}`);
-    return await response.json();
-}
-
-export async function excluir(slug: string): Promise<void> {
-   await fetch(`${BASE_API}/${slug}`, {
-    method: 'DELETE',
-   })
-}
-
-export async function update(post: Post): Promise<void> {
-    await fetch(`${BASE_API}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(post),
-    })
-} */
